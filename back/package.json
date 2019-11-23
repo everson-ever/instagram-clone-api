@@ -4,7 +4,9 @@
   "description": "instagram com principais funções: perfis, uploads e hashtags",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/index",
+    "dev": "nodemon src/index --ignore tests",
+    "test": "jest"
   },
   "author": "Everson Silva",
   "license": "ISC",
@@ -16,6 +18,8 @@
     "socket.io": "^2.3.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.1"
+    "jest": "^24.9.0",
+    "nodemon": "^2.0.1",
+    "supertest": "^4.0.2"
   }
 }

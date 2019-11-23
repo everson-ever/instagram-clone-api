@@ -6,19 +6,14 @@ class UserController {
     async index(req, res) {
         const users = await User.find();
 
-        return res.json(users);
+        return res.status(200).json(users);
     }
 
     async get(req, res) {
         const { id } = req.params;
 
-
         const user = await User.findById(id);
-
-            return res.json(user);
-
-
-        
+        return res.status(200).json(user); 
     }
 
     async store(req, res) {
