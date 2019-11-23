@@ -27,15 +27,23 @@ class UserController {
 
         user = await User.create(req.body);
 
-        return res.json(user);
+        return res.status(201).json(user);
     }
 
-    async update() {
+    async update(req, res) {
+        const { id } = req.params;
 
+        const user = await User.findByIdAndUpdate(id, req.body)
+
+        return res.status(200).json(user);
     }
 
-    async destroy() {
+    async destroy(req, res) {
+        const { id } = req.params;
 
+        const user = await User.findByIdAndDelete(id);
+
+        res.status(200).json(user);
     }
 
 }
