@@ -2,6 +2,9 @@ const routes = require('express').Router();
 
 
 const UserController = require('./app/controllers/UserController');
+const SessionController = require('./app/controllers/SessionController');
+
+routes.post('/session', SessionController.store);
 
 
 routes.get('/users', UserController.index);
