@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
+const authConfig = require('./../../config/auth');
 
 const UserSchema = new mongoose.Schema({
 	name: {
@@ -24,16 +25,13 @@ const UserSchema = new mongoose.Schema({
 	createdAt: {
 		type: Date,
 		default: Date.now
-	},
-
+	}
 });
 
-UserSchema.statics.generateToken = function({_id, name}) {
-	return jwt.sign({_id, name}, 'secreteKey', {
-		expiresIn: 8000
+UserSchema.statics.generateToken = function({ _id, name }) {
+	return jwt.sign({ _id, name }, authConfig.secretKey, {
+		expiresIn: authConfig.ttl
 	});
 };
-
-
 
 module.exports = mongoose.model('User', UserSchema);
