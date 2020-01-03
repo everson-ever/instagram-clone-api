@@ -16,6 +16,7 @@ module.exports = async (req, res, next) => {
 
 		req.userId = decoded._id;
 		req.userName = decoded.name;
+		req.userRole = decoded.role;
 
 		next();
 	} catch (err) {

@@ -22,14 +22,18 @@ const UserSchema = new mongoose.Schema({
 		type: String,
 		required: true
 	},
+	role: {
+		type: String,
+		default: 'user'
+	},
 	createdAt: {
 		type: Date,
 		default: Date.now
 	}
 });
 
-UserSchema.statics.generateToken = function({ _id, name }) {
-	return jwt.sign({ _id, name }, authConfig.secretKey, {
+UserSchema.statics.generateToken = function({ _id, name, role }) {
+	return jwt.sign({ _id, name, role }, authConfig.secretKey, {
 		expiresIn: authConfig.ttl
 	});
 };
