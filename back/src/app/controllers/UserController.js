@@ -1,51 +1,71 @@
 const User = require('../models/Users');
 
-
 class UserController {
+	async index(req, res) {
+		try {
+			const users = await User.find();
 
-    async index(req, res) {
-        const users = await User.find();
+			return res.status(200).json(users);
+		} catch (err) {
+			return res.status(500).json({ message: 'Internal server error', status: false });
+		}
+	}
 
-        return res.status(200).json(users);
-    }
+	async get(req, res) {
+		try {
+			const { id } = req.params;
 
-    async get(req, res) {
-        const { id } = req.params;
+			const user = await User.findById(id);
 
-        const user = await User.findById(id);
-        return res.status(200).json(user); 
-    }
+			if (!user) return res.status(404).json({ message: 'Not found', status: false });
 
-    async store(req, res) {
-        const { email } = req.body;
+			return res.status(200).json(user);
+		} catch (err) {
+			return res.status(500).json({ message: 'Internal server error', status: false });
+		}
+	}
 
-        let user = await User.findOne({ email });
+	async store(req, res) {
+		try {
+			const { name, email, gender, password } = req.body;
 
-        if (user) {
-            return res.status(400).json({error: "User already exists"});
-        }
+			let userExists = await User.findOne({ email });
 
-        user = await User.create(req.body);
+			if (userExists) return res.status(400).json({ error: 'User already exists' });
 
-        return res.status(201).json(user);
-    }
+			const user = await User.create({ name, email, gender, password });
 
-    async update(req, res) {
-        const { id } = req.params;
+			if (!user) return res.status(500).json({ message: 'Internal server error', status: false });
 
-        const user = await User.findByIdAndUpdate(id, req.body)
+			return res.status(201).json(user);
+		} catch (err) {
+			return res.status(500).json({ message: 'Internal server error', status: false });
+		}
+	}
 
-        return res.status(200).json(user);
-    }
+	async update(req, res) {
+		try {
+			const { id } = req.params;
 
-    async destroy(req, res) {
-        const { id } = req.params;
+			const user = await User.findByIdAndUpdate({ _id: id }, req.body);
 
-        const user = await User.findByIdAndDelete(id);
+			return res.status(200).json(user);
+		} catch (err) {
+			return res.status(500).json({ message: 'Internal server error', status: false });
+		}
+	}
 
-        res.status(200).json(user);
-    }
+	async destroy(req, res) {
+		try {
+			const { id } = req.params;
 
+			const user = await User.findByIdAndDelete(id);
+
+			res.status(200).json(user);
+		} catch (err) {
+			return res.status(500).json({ message: 'Internal server error', status: false });
+		}
+	}
 }
 
 module.exports = new UserController();
