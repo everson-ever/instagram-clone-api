@@ -60,6 +60,7 @@ class UserController {
 			const { id } = req.params;
 
 			const user = await User.findByIdAndDelete(id);
+			if (!user) return res.status(404).json({ message: 'Not found', status: false });
 
 			res.status(200).json(user);
 		} catch (err) {

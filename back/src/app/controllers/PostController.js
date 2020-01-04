@@ -3,7 +3,7 @@ const Post = require('./../models/Post');
 class PostController {
 	async index(req, res) {
 		try {
-			const posts = await Post.find().populate('user');
+			const posts = await Post.find().populate('author');
 
 			return res.status(200).json(posts);
 		} catch (err) {
@@ -15,7 +15,7 @@ class PostController {
 		try {
 			const { id } = req.params;
 
-			const post = await Post.findById({ _id: id });
+			const post = await Post.findById({ _id: id }).populate('author');
 
 			if (!post) return res.status(404).json({ message: 'Not found', status: false });
 
@@ -56,6 +56,8 @@ class PostController {
 			const { id } = req.params;
 
 			const post = await Post.findByIdAndDelete(id);
+
+			if (!post) return res.status(404).json({ message: 'Not found', status: false });
 
 			res.status(200).json(post);
 		} catch (err) {
