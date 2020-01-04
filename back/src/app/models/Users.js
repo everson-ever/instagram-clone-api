@@ -22,10 +22,20 @@ const UserSchema = new mongoose.Schema({
 		type: String,
 		required: true
 	},
+	activated: {
+		type: Number,
+		default: 1
+	},
 	role: {
 		type: String,
 		default: 'user'
 	},
+	posts: [
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'Post'
+		}
+	],
 	createdAt: {
 		type: Date,
 		default: Date.now
