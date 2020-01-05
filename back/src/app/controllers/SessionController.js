@@ -15,8 +15,8 @@ class Session {
         if (!await user.isPassword(password)) {
             return res.status(404).json({message: "Not Found", status: false});
         }
-        
-        if (user.activeted === 0) {
+
+        if (parseInt(user.activated) === 0) {
             return res.status(403).json({ message: 'Forbidden', status: false });
         }
         
