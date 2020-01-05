@@ -1,7 +1,25 @@
 //const jest = require('jest');
 const request = require('supertest');
-const port = process.env.PORT || 3333;
-const api = `http://localhost:${port}/api`;
+
+
+
+describe('register user', () => {
+	it('POST /register expected status 201 and a new user', () => {
+		return request(api)
+			.post('/register')
+			.send({
+				name: "Everson Silva",
+				email: "everson@mail.com",
+				gender: "m",
+				password: "000000"
+			})
+			.then(response => {
+				expect(response.body).toBeDefined()
+				expect(response.status).toBe(201)
+			})
+			.catch(fail)
+	})
+});
 
 describe('session', () => {
 	it('POST /session expected token in response', () => {
@@ -26,3 +44,5 @@ describe('session', () => {
 			.catch(fail);
 	});
 });
+
+
