@@ -1,8 +1,13 @@
 const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
 const authConfig = require('./../../config/auth');
+const User = require('./../models/Users');
 
 module.exports = async (req, res, next) => {
+
+
+
+
 	const authHeader = req.headers.authorization;
 
 	if (!authHeader) {
@@ -17,6 +22,12 @@ module.exports = async (req, res, next) => {
 		req.userId = decoded._id;
 		req.userName = decoded.name;
 		req.userRole = decoded.role;
+
+		const user = await User.findById({_id: req.userId});
+		
+		if (user.userBlocked(user)) {
+			return res.status(403).json({ message: 'Forbidden', status: false });
+		}
 
 		next();
 	} catch (err) {
