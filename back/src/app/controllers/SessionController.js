@@ -12,11 +12,11 @@ class Session {
             return res.status(404).json({message: "Not Found", status: false});
         }
 
-        if (user.password != password) {
+        if (!await user.isPassword(password)) {
             return res.status(404).json({message: "Not Found", status: false});
         }
-
-        if (user.activeted !== 1) {
+        
+        if (user.activeted === 0) {
             return res.status(403).json({ message: 'Forbidden', status: false });
         }
         
