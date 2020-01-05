@@ -48,6 +48,7 @@ class UserController {
 			const { id } = req.params;
 
 			const user = await User.findByIdAndUpdate({ _id: id }, req.body);
+			if (!user) return res.status(404).json({ message: 'Not found', status: false });
 
 			return res.status(200).json(user);
 		} catch (err) {
