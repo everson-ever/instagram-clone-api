@@ -60,6 +60,12 @@ UserSchema.pre('save', async function(next) {
 UserSchema.methods =  {
 	isPassword(password) {
 		return bcrypt.compare(password, this.password);
+	},
+
+	userBlocked({ activated }) {
+		if(parseInt(activated) === 0) {
+			return true;
+		}
 	}
 }
 
