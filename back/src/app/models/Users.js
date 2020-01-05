@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const authConfig = require('./../../config/auth');
 
@@ -47,5 +48,13 @@ UserSchema.statics.generateToken = function({ _id, name, role }) {
 		expiresIn: authConfig.ttl
 	});
 };
+
+UserSchema.pre('save', async function(next) {
+	if (!this.isModified('password')) {
+		return next();
+	}
+
+	this.password = await bcrypt.hash(this.password, 8)
+})
 
 module.exports = mongoose.model('User', UserSchema);
