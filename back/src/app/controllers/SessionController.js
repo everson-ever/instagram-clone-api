@@ -15,6 +15,10 @@ class Session {
         if (user.password != password) {
             return res.status(404).json({message: "Not Found", status: false});
         }
+
+        if (user.activeted !== 1) {
+            return res.status(403).json({ message: 'Forbidden', status: false });
+        }
         
         return res.status(200).json({ token: User.generateToken(user) });
 
