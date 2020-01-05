@@ -16,7 +16,7 @@ class Session {
             return res.status(404).json({message: "Not Found", status: false});
         }
 
-        if (parseInt(user.activated) === 0) {
+        if (user.userBlocked(user)) {
             return res.status(403).json({ message: 'Forbidden', status: false });
         }
         
