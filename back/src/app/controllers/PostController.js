@@ -3,7 +3,7 @@ const Post = require('./../models/Post');
 class PostController {
 	async index(req, res) {
 		try {
-			const posts = await Post.find().populate('author');
+			const posts = await Post.find().populate('author', [ '_id', 'name', 'gender' ]);
 
 			return res.status(200).json(posts);
 		} catch (err) {
