@@ -15,7 +15,10 @@ class UserController {
 		try {
 			const { id } = req.params;
 
-			const user = await User.findById(id);
+			const user = await User.findById(id)
+				.select([ '-password', '-posts' ])
+				.populate('following', [ '_id', 'name' ])
+				.populate('followers', [ '_id', 'name' ]);
 
 			if (!user) return res.status(404).json({ message: 'Not found', status: false });
 
