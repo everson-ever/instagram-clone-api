@@ -4,49 +4,43 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const configDatabase = require('./config/database');
 
-
-
 class App {
+	constructor() {
+		this.express = express();
+		this.server = '';
+		this.isDev = process.env.NODE_ENV !== 'production';
 
-    constructor() {
+		this.database();
+		this.middlewares();
+		this.routes();
+	}
 
-        this.express = express();
-        this.server = '';
-        this.isDev = process.env.NODE_ENV !== 'production';
+	database() {
+		mongoose.connect(configDatabase.uri, {
+			useNewUrlParser: true,
+			useCreateIndex: true,
+			useUnifiedTopology: true
+		});
+	}
 
-        this.database();
-        this.middlewares();
-        this.routes();
-    }
+	middlewares() {
+		this.express.use(express.urlencoded({ extended: false }));
+		this.express.use(bodyParser.json());
+		this.express.use(cors());
 
-    database() {
-        mongoose.connect(configDatabase.uri, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true
-        });
-    }
+		this.server = require('http').Server(this.express);
+		const io = require('socket.io')(this.server);
 
+		this.express.use((req, res, next) => {
+			req.io = io;
 
-    middlewares() {
-        this.express.use(express.urlencoded({ extended: false }));
-        this.express.use(bodyParser.json());
-        this.express.use(cors());
+			next();
+		});
+	}
 
-        this.server = require('http').Server(this.express);
-        const io = require('socket.io')(this.server)
-
-        this.express.use((req, res, next) => {
-            req.io = io;
-
-            next();
-        });
-
-
-    }
-
-    routes() {
-        this.express.use('/api', require('./routes'));
-    }
+	routes() {
+		this.express.use('/api', require('./routes'));
+	}
 }
 
 module.exports = new App().server;
