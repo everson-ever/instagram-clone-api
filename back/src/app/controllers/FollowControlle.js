@@ -1,6 +1,19 @@
 const User = require('./../models/User');
 
 class FollowController {
+	async index(req, res) {
+		try {
+			const followers = await User.findById({ _id: req.userId }, 'following').populate('following', [
+				'_id',
+				'name'
+			]);
+
+			return res.status(200).json(followers);
+		} catch (err) {
+			return res.status(500).json({ message: 'Internal server error', status: false });
+		}
+	}
+
 	async store(req, res) {
 		try {
 			const { id } = req.body;
@@ -21,7 +34,32 @@ class FollowController {
 			}
 
 			return res.status(201).json({ message: 'Created', status: true });
-		} catch (err) {}
+		} catch (err) {
+			return res.status(500).json({ message: 'Internal server error', status: false });
+		}
+	}
+
+	async destroy(req, res) {
+		try {
+			const { id } = req.params;
+
+			const user = await User.findOne({ _id: req.userId });
+
+			if (!user.following.includes(id)) {
+				return res.status(400).json({ message: 'Bad request', status: false });
+			}
+			const userFollowing = await User.findOne({ _id: id });
+
+			userFollowing.followers = userFollowing.followers.filter((idFollower) => idFollower != req.userId);
+			userFollowing.save();
+
+			user.following = user.following.filter((idFollowing) => idFollowing != id);
+			user.save();
+
+			return res.status(200).json({ status: true });
+		} catch (err) {
+			return res.status(500).json({ message: 'Internal server error', status: false });
+		}
 	}
 }
 
