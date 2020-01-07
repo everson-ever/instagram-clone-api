@@ -7,9 +7,14 @@ const roles = require('./config/roles');
 const UserController = require('./app/controllers/UserController');
 const SessionController = require('./app/controllers/SessionController');
 const PostController = require('./app/controllers/PostController');
+const FollowController = require('./app/controllers/FollowControlle');
 
 routes.post('/session', SessionController.store);
 routes.post('/register', UserController.store);
+
+routes.get('/users/follow', authMiddleware, FollowController.index);
+routes.post('/users/follow', authMiddleware, FollowController.store);
+routes.delete('/users/:id/follow', authMiddleware, FollowController.destroy);
 
 routes.get('/users', [ authMiddleware, permissionMiddleware(roles.admin) ], UserController.index);
 routes.get('/users/:id', authMiddleware, UserController.get);
