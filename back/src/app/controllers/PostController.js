@@ -50,7 +50,17 @@ class PostController {
 		try {
 			const { id } = req.params;
 
-			const post = await Post.findByIdAndUpdate({ _id: id }, req.body);
+			const post = await Post.findById(id);
+			if (!post) return res.status(404).json({ message: 'Not found', status: false });
+
+			const { author } = post;
+
+			if (author._id.toString() !== req.userId)
+				return res.status(403).json({ message: 'Forbidden', status: false });
+
+			await post.update(req.body);
+
+			post.save();
 
 			return res.status(200).json(post);
 		} catch (err) {
