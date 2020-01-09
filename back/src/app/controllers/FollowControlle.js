@@ -18,9 +18,14 @@ class FollowController {
 		try {
 			const { id } = req.body;
 
+			if (id === req.userId) return res.status(400).json({ message: 'Bad request', status: false });
+
+			/* Verify if user to follow exists */
 			const userFollow = await User.findOne({ _id: id });
 			if (!userFollow) return res.status(400).json({ message: 'Bad request', status: false });
 
+			/* Verify in followers list of the user to followe if already is following
+			, else follow and save */
 			if (!userFollow.followers.includes(req.userId)) {
 				userFollow.followers.push(req.userId);
 				userFollow.save();
@@ -28,6 +33,7 @@ class FollowController {
 
 			const user = await User.findOne({ _id: req.userId });
 
+			/* Verify if already is in following list, else follow and save */
 			if (!user.following.includes(id)) {
 				user.following.push(id);
 				user.save();
