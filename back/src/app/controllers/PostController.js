@@ -1,5 +1,6 @@
 const Post = require('./../models/Post');
 const User = require('./../models/User');
+const mongoose = require('mongoose');
 
 class PostController {
 	async index(req, res) {
@@ -74,6 +75,8 @@ class PostController {
 
 			const post = await Post.findOne({ _id: id });
 
+			if (!post) return res.status(404).json({ message: 'Post Não encontrado', status: false });
+
 			const { author } = post;
 
 			if (author._id.toString() !== req.userId)
@@ -83,8 +86,9 @@ class PostController {
 
 			res.status(200).json({ message: 'Post excluído', status: true });
 		} catch (err) {
-			if (err.name === 'CastError') {
-				return res.status(404).json({ message: 'Post Não encontrado', status: false });
+			console.log(err);
+			if (err instanceof mongoose.CastError) {
+				return res.status(404).json({ message: 'id inválido', status: false });
 			}
 			return res.status(500).json({ message: 'Internal server error', status: false });
 		}
