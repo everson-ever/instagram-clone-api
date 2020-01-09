@@ -72,12 +72,20 @@ class PostController {
 		try {
 			const { id } = req.params;
 
-			const post = await Post.findByIdAndDelete(id);
+			const post = await Post.findOne({ _id: id });
 
-			if (!post) return res.status(404).json({ message: 'Not found', status: false });
+			const { author } = post;
 
-			res.status(200).json(post);
+			if (author._id.toString() !== req.userId)
+				return res.status(403).json({ message: 'Impossível excluir este post', status: false });
+
+			await post.remove();
+
+			res.status(200).json({ message: 'Post excluído', status: true });
 		} catch (err) {
+			if (err.name === 'CastError') {
+				return res.status(404).json({ message: 'Post Não encontrado', status: false });
+			}
 			return res.status(500).json({ message: 'Internal server error', status: false });
 		}
 	}
