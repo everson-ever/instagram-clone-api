@@ -1,9 +1,16 @@
 const Post = require('./../models/Post');
+const User = require('./../models/User');
 
 class PostController {
 	async index(req, res) {
 		try {
-			const posts = await Post.find().populate('author', [ '_id', 'name', 'gender' ]);
+			let posts = await Post.find().populate('author', [ '_id', 'name', 'gender' ]);
+
+			const user = await User.findById(req.userId).select([ 'following' ]);
+
+			user.following.push(req.userId);
+
+			posts = posts.filter((post) => user.following.includes(post.author.id));
 
 			return res.status(200).json(posts);
 		} catch (err) {
