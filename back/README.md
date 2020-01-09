@@ -37,7 +37,7 @@
 > **PARAMS:** {text, image} Header: Authorization <br>
 > **RESPONSE:** {posts}
 
-### Create Post
+### Delete Post
 > **URL:** http://localhost:3333/api/posts/{id} <br>
 > **METHOD:** DELETE <br>
 > **PARAMS:** Header: Authorization <br>
