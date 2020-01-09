@@ -3,7 +3,7 @@ const User = require('../models/User');
 class UserController {
 	async index(req, res) {
 		try {
-			const users = await User.find();
+			const users = await User.find().select([ '-password', '-posts', '-following', '-followers' ]);
 
 			return res.status(200).json(users);
 		} catch (err) {
@@ -49,6 +49,7 @@ class UserController {
 	async update(req, res) {
 		try {
 			const { id } = req.params;
+			if (id !== req.userId) return res.status(403).json({ message: 'Forbidden', status: false });
 
 			const user = await User.findByIdAndUpdate({ _id: id }, req.body);
 			if (!user) return res.status(404).json({ message: 'Not found', status: false });
@@ -62,6 +63,8 @@ class UserController {
 	async destroy(req, res) {
 		try {
 			const { id } = req.params;
+
+			if (id !== req.userId) return res.status(403).json({ message: 'Forbidden', status: false });
 
 			const user = await User.findByIdAndDelete(id);
 			if (!user) return res.status(404).json({ message: 'Not found', status: false });
