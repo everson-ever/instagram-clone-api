@@ -13,7 +13,7 @@ class PostController {
 
 			posts = posts.filter((post) => user.following.includes(post.author.id));
 
-			return res.status(200).json(posts);
+			return res.status(200).json({ message: 'sucesso', status: true, posts });
 		} catch (err) {
 			return res.status(500).json({ message: 'Internal server error', status: false });
 		}
@@ -25,10 +25,13 @@ class PostController {
 
 			const post = await Post.findById({ _id: id }).populate('author');
 
-			if (!post) return res.status(404).json({ message: 'Not found', status: false });
+			if (!post) return res.status(404).json({ message: 'Post não encontrado', status: false });
 
-			return res.status(200).json(post);
+			return res.status(200).json({ message: 'sucesso', status: true, post });
 		} catch (err) {
+			if (err instanceof mongoose.CastError) {
+				return res.status(400).json({ message: 'id inválido', status: false });
+			}
 			return res.status(500).json({ message: 'Internal server error', status: false });
 		}
 	}
@@ -39,9 +42,9 @@ class PostController {
 
 			const post = await Post.create({ content, image, author: req.userId });
 
-			if (!post) return res.status(500).json({ message: 'Internal server error', status: false });
+			if (!post) return res.status(500).json({ message: 'Não foi possível criar a postagem', status: false });
 
-			return res.status(201).json(post);
+			return res.status(201).json({ message: 'post criado', status: true, post });
 		} catch (err) {
 			return res.status(500).json({ message: 'Internal server error', status: false });
 		}
@@ -52,19 +55,22 @@ class PostController {
 			const { id } = req.params;
 
 			const post = await Post.findById(id);
-			if (!post) return res.status(404).json({ message: 'Not found', status: false });
+			if (!post) return res.status(404).json({ message: 'Post não encontrado', status: false });
 
 			const { author } = post;
 
 			if (author._id.toString() !== req.userId)
-				return res.status(403).json({ message: 'Forbidden', status: false });
+				return res.status(403).json({ message: 'Impossível editar este post', status: false });
 
 			await post.update(req.body);
 
 			post.save();
 
-			return res.status(200).json(post);
+			return res.status(200).json({ message: 'Post editado', status: true, post });
 		} catch (err) {
+			if (err instanceof mongoose.CastError) {
+				return res.status(400).json({ message: 'id inválido', status: false });
+			}
 			return res.status(500).json({ message: 'Internal server error', status: false });
 		}
 	}
@@ -86,9 +92,8 @@ class PostController {
 
 			res.status(200).json({ message: 'Post excluído', status: true });
 		} catch (err) {
-			console.log(err);
 			if (err instanceof mongoose.CastError) {
-				return res.status(404).json({ message: 'id inválido', status: false });
+				return res.status(400).json({ message: 'id inválido', status: false });
 			}
 			return res.status(500).json({ message: 'Internal server error', status: false });
 		}
