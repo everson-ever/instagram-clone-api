@@ -9,15 +9,15 @@ class Session {
         const user = await User.findOne({ email });
 
         if (!user) {
-            return res.status(404).json({message: "Not Found", status: false});
+            return res.status(404).json({message: "Credenciais incorretas", status: false});
         }
 
         if (!await user.isPassword(password)) {
-            return res.status(404).json({message: "Not Found", status: false});
+            return res.status(404).json({message: "Credenciais incorretas", status: false});
         }
 
         if (user.userBlocked(user)) {
-            return res.status(403).json({ message: 'Forbidden', status: false });
+            return res.status(403).json({ message: 'Conta bloqueada', status: false });
         }
         
         return res.status(200).json({ token: User.generateToken(user) });

@@ -20,7 +20,7 @@ class UserController {
 				.populate('following', [ '_id', 'name' ])
 				.populate('followers', [ '_id', 'name' ]);
 
-			if (!user) return res.status(404).json({ message: 'Not found', status: false });
+			if (!user) return res.status(404).json({ message: 'Usuário não encontrado', status: false });
 
 			return res.status(200).json(user);
 		} catch (err) {
@@ -34,11 +34,11 @@ class UserController {
 
 			let userExists = await User.findOne({ email });
 
-			if (userExists) return res.status(400).json({ error: 'User already exists' });
+			if (userExists) return res.status(400).json({ error: 'Email já cadastrado' });
 
 			const user = await User.create({ name, email, gender, password });
 
-			if (!user) return res.status(500).json({ message: 'Internal server error', status: false });
+			if (!user) return res.status(400).json({ message: 'Erro ao cadastrar', status: false });
 
 			return res.status(201).json(user);
 		} catch (err) {
@@ -49,10 +49,10 @@ class UserController {
 	async update(req, res) {
 		try {
 			const { id } = req.params;
-			if (id !== req.userId) return res.status(403).json({ message: 'Forbidden', status: false });
+			if (id !== req.userId) return res.status(403).json({ message: 'Você não tem permissão', status: false });
 
 			const user = await User.findByIdAndUpdate({ _id: id }, req.body);
-			if (!user) return res.status(404).json({ message: 'Not found', status: false });
+			if (!user) return res.status(404).json({ message: 'Usuário não encontrado', status: false });
 
 			return res.status(200).json(user);
 		} catch (err) {
@@ -64,10 +64,10 @@ class UserController {
 		try {
 			const { id } = req.params;
 
-			if (id !== req.userId) return res.status(403).json({ message: 'Forbidden', status: false });
+			if (id !== req.userId) return res.status(403).json({ message: 'Você não tem permissão', status: false });
 
 			const user = await User.findByIdAndDelete(id);
-			if (!user) return res.status(404).json({ message: 'Not found', status: false });
+			if (!user) return res.status(404).json({ message: 'Usuário não encontrado', status: false });
 
 			res.status(200).json(user);
 		} catch (err) {
