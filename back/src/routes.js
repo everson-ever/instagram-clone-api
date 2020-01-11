@@ -1,5 +1,9 @@
 const routes = require('express').Router();
 
+const multer = require('multer');
+const uploadConfig = require('./config/upload');
+const upload = multer(uploadConfig);
+
 const authMiddleware = require('./app/middlewares/auth');
 const permissionMiddleware = require('./app/middlewares/permission');
 const roles = require('./config/roles');
@@ -23,7 +27,7 @@ routes.delete('/users/:id', authMiddleware, UserController.destroy);
 
 routes.get('/posts', authMiddleware, PostController.index);
 routes.get('/posts/:id', authMiddleware, PostController.get);
-routes.post('/posts', authMiddleware, PostController.store);
+routes.post('/posts', upload.single('image'), authMiddleware, PostController.store);
 routes.put('/posts/:id', authMiddleware, PostController.update);
 routes.delete('/posts/:id', authMiddleware, PostController.destroy);
 
