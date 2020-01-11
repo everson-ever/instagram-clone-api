@@ -38,14 +38,17 @@ class PostController {
 
 	async store(req, res) {
 		try {
-			const { content, image } = req.body;
+			console.log(req.file);
+			const { description } = req.body;
+			const { filename: image } = req.file
 
-			const post = await Post.create({ content, image, author: req.userId });
+			const post = await Post.create({ description, image, author: req.userId });
 
 			if (!post) return res.status(500).json({ message: 'Não foi possível criar a postagem', status: false });
 
 			return res.status(201).json({ message: 'post criado', status: true, post });
 		} catch (err) {
+			//console.log(err);
 			return res.status(500).json({ message: 'Internal server error', status: false });
 		}
 	}
