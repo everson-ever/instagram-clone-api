@@ -66,7 +66,7 @@ class PostController {
 			if (author._id.toString() !== req.userId)
 				return res.status(403).json({ message: 'Impossível editar este post', status: false });
 
-			await post.update({ description });
+			await post.updateOne({ description });
 
 			post.save();
 
