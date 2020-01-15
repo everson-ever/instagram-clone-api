@@ -39,7 +39,7 @@ class PostController {
 	async store(req, res) {
 		try {
 			const { description } = req.body;
-			const { filename: image } = req.file
+			const { filename: image } = req.file;
 
 			const post = await Post.create({ description, image, author: req.userId });
 
@@ -54,6 +54,7 @@ class PostController {
 	async update(req, res) {
 		try {
 			const { id } = req.params;
+			const { description } = req.body;
 
 			const post = await Post.findById(id);
 			if (!post) return res.status(404).json({ message: 'Post não encontrado', status: false });
@@ -63,7 +64,7 @@ class PostController {
 			if (author._id.toString() !== req.userId)
 				return res.status(403).json({ message: 'Impossível editar este post', status: false });
 
-			await post.update(req.body);
+			await post.update({ description });
 
 			post.save();
 
