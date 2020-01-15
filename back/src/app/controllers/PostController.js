@@ -15,9 +15,9 @@ class PostController {
 
 			posts = posts.filter((post) => user.following.includes(post.author.id));
 
-			return res.status(200).json({ message: 'sucesso', status: true, posts });
+			return res.status(200).json({ message: 'sucesso', status: 200, posts });
 		} catch (err) {
-			return res.status(500).json({ message: 'Internal server error', status: false });
+			return res.status(500).json({ message: 'Internal server error', status: 500 });
 		}
 	}
 
@@ -27,14 +27,14 @@ class PostController {
 
 			const post = await Post.findById({ _id: id }).populate('author');
 
-			if (!post) return res.status(404).json({ message: 'Post não encontrado', status: false });
+			if (!post) return res.status(404).json({ message: 'Post não encontrado', status: 404 });
 
-			return res.status(200).json({ message: 'sucesso', status: true, post });
+			return res.status(200).json({ message: 'sucesso', status: 200, post });
 		} catch (err) {
 			if (err instanceof mongoose.CastError) {
-				return res.status(400).json({ message: 'id inválido', status: false });
+				return res.status(400).json({ message: 'id inválido', status: 400 });
 			}
-			return res.status(500).json({ message: 'Internal server error', status: false });
+			return res.status(500).json({ message: 'Internal server error', status: 500 });
 		}
 	}
 
@@ -47,9 +47,9 @@ class PostController {
 
 			if (!post) return res.status(500).json({ message: 'Não foi possível criar a postagem', status: false });
 
-			return res.status(201).json({ message: 'post criado', status: true, post });
+			return res.status(201).json({ message: 'post criado', status: 201, post });
 		} catch (err) {
-			return res.status(500).json({ message: 'Internal server error', status: false });
+			return res.status(500).json({ message: 'Internal server error', status: 500 });
 		}
 	}
 
@@ -59,23 +59,23 @@ class PostController {
 			const { description } = req.body;
 
 			const post = await Post.findById(id);
-			if (!post) return res.status(404).json({ message: 'Post não encontrado', status: false });
+			if (!post) return res.status(404).json({ message: 'Post não encontrado', status: 404 });
 
 			const { author } = post;
 
 			if (author._id.toString() !== req.userId)
-				return res.status(403).json({ message: 'Impossível editar este post', status: false });
+				return res.status(403).json({ message: 'Impossível editar este post', status: 403 });
 
 			await post.updateOne({ description });
 
 			post.save();
 
-			return res.status(200).json({ message: 'Post editado', status: true, post });
+			return res.status(200).json({ message: 'Post editado', status: 200, post });
 		} catch (err) {
 			if (err instanceof mongoose.CastError) {
-				return res.status(400).json({ message: 'id inválido', status: false });
+				return res.status(400).json({ message: 'id inválido', status: 400 });
 			}
-			return res.status(500).json({ message: 'Internal server error', status: false });
+			return res.status(500).json({ message: 'Internal server error', status: 500 });
 		}
 	}
 
@@ -85,23 +85,23 @@ class PostController {
 
 			const post = await Post.findOne({ _id: id });
 
-			if (!post) return res.status(404).json({ message: 'Post Não encontrado', status: false });
+			if (!post) return res.status(404).json({ message: 'Post Não encontrado', status: 404 });
 
 			const { author } = post;
 
 			if (author._id.toString() !== req.userId)
-				return res.status(403).json({ message: 'Impossível excluir este post', status: false });
+				return res.status(403).json({ message: 'Impossível excluir este post', status: 403 });
 
 			await post.remove();
 
 			fs.unlinkSync(path.resolve(__dirname, '..', '..', '..', 'tmp', 'uploads', 'posts', post.image));
 
-			res.status(200).json({ message: 'Post excluído', status: true });
+			res.status(200).json({ message: 'Post excluído', status: 200 });
 		} catch (err) {
 			if (err instanceof mongoose.CastError) {
-				return res.status(400).json({ message: 'id inválido', status: false });
+				return res.status(400).json({ message: 'id inválido', status: 400 });
 			}
-			return res.status(500).json({ message: 'Internal server error', status: false });
+			return res.status(500).json({ message: 'Internal server error', status: 500 });
 		}
 	}
 }
