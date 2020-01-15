@@ -38,7 +38,6 @@ class PostController {
 
 	async store(req, res) {
 		try {
-			console.log(req.file);
 			const { description } = req.body;
 			const { filename: image } = req.file
 
@@ -48,7 +47,6 @@ class PostController {
 
 			return res.status(201).json({ message: 'post criado', status: true, post });
 		} catch (err) {
-			//console.log(err);
 			return res.status(500).json({ message: 'Internal server error', status: false });
 		}
 	}
