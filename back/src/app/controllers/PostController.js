@@ -1,6 +1,8 @@
 const Post = require('./../models/Post');
 const User = require('./../models/User');
 const mongoose = require('mongoose');
+const fs = require('fs');
+const path = require('path');
 
 class PostController {
 	async index(req, res) {
@@ -91,6 +93,8 @@ class PostController {
 				return res.status(403).json({ message: 'Impossível excluir este post', status: false });
 
 			await post.remove();
+
+			fs.unlinkSync(path.resolve(__dirname, '..', '..', '..', 'tmp', 'uploads', 'posts', post.image));
 
 			res.status(200).json({ message: 'Post excluído', status: true });
 		} catch (err) {
