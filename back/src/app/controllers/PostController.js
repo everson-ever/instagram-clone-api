@@ -40,10 +40,12 @@ class PostController {
 
 	async store(req, res) {
 		try {
-			const { description } = req.body;
+			let { description, hashtags } = req.body;
 			const { filename: image } = req.file;
 
-			const post = await Post.create({ description, image, author: req.userId });
+			hashtags = hashtags.split(',').map((hashtag) => hashtag.trim());
+
+			const post = await Post.create({ description, image, hashtags, author: req.userId });
 
 			if (!post) return res.status(500).json({ message: 'Não foi possível criar a postagem', status: false });
 
