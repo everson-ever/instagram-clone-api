@@ -17,6 +17,9 @@ const PostSchema = new mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'User'
 	},
+	hashtags: {
+		type: [ String ]
+	},
 	createdAt: {
 		type: Date,
 		default: Date.now
