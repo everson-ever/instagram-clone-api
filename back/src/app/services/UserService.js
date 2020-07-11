@@ -3,15 +3,19 @@ const User = require('../models/User');
 class UserService {
 
     checkRequiredParams(fields, requiredFields) {
-        const errors = [];
+        let missingParams = [];
         for (const field of requiredFields) {
             if(!fields[field]) {
                 const error = `O parâmetro '${field}' é obrigatório`;
-                errors.push(error);
+                missingParams.push(error);
             }
         }
 
-        return errors;
+        if (missingParams.length === 0) {
+            missingParams = null;
+        }
+
+        return missingParams;
     }
 
     async getUsers() {
@@ -21,6 +25,11 @@ class UserService {
 
     async findByEmail(email) {
         const user = await User.findOne({ email });
+        return user;
+    }
+
+    async findById(id) {
+        const user = await User.findOne({ id });
         return user;
     }
 
