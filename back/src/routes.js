@@ -9,12 +9,14 @@ const permissionMiddleware = require('./app/middlewares/permission');
 const roles = require('./config/roles');
 
 const UserController = require('./app/controllers/UserController');
+const SignupController = require('./app/controllers/SignupController');
 const SessionController = require('./app/controllers/SessionController');
 const PostController = require('./app/controllers/PostController');
 const FollowController = require('./app/controllers/FollowControlle');
 
 routes.post('/session', SessionController.store);
-routes.post('/register', UserController.store);
+
+routes.post('/register', SignupController.store);
 
 routes.get('/users/follow', authMiddleware, FollowController.index);
 routes.post('/users/follow', authMiddleware, FollowController.store);
