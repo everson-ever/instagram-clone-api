@@ -1,9 +1,10 @@
 const User = require('../models/User');
+const UserService = require('../services/UserService')
 
 class UserController {
 	async index(req, res) {
 		try {
-			const users = await User.find().select([ '-password', '-posts', '-following', '-followers' ]);
+			const users = await UserService.getUsers();
 
 			return res.status(200).json(users);
 		} catch (err) {
@@ -28,23 +29,7 @@ class UserController {
 		}
 	}
 
-	async store(req, res) {
-		try {
-			const { name, email, gender, password } = req.body;
 
-			let userExists = await User.findOne({ email });
-
-			if (userExists) return res.status(400).json({ error: 'Email já cadastrado' });
-
-			const user = await User.create({ name, email, gender, password });
-
-			if (!user) return res.status(400).json({ message: 'Erro ao cadastrar', status: false });
-
-			return res.status(201).json(user);
-		} catch (err) {
-			return res.status(500).json({ message: 'Internal server error', status: false });
-		}
-	}
 
 	async update(req, res) {
 		try {
