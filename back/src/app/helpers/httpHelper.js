@@ -15,7 +15,15 @@ const serverError = () => {
     }
 }
 
+const ok = (data) => {
+    return {
+        statusCode: 200,
+        body: data
+    }
+}
+
 module.exports = {
     badRequest,
-    serverError
+    serverError,
+    ok
 }

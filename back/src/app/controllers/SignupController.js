@@ -1,13 +1,14 @@
 const UserService = require('../services/UserService');
-const { badRequest, serverError } = require('../helpers/httpHelper');
+const { badRequest, serverError, ok } = require('../helpers/httpHelper');
 const MissingParamError = require('../errors/MissingParamError');
+const { data } = require('jquery');
 
 class SignupController {
 
     async store(req, res) {
 		try {
             const fields = req.body;
-            const { email } = req.body;      
+            const { email } = fields;      
             const requiredFields = ['name', 'email', 'gender', 'password'];
             const missingParams = UserService.checkRequiredParams(fields, requiredFields);
 
@@ -25,7 +26,7 @@ class SignupController {
             
             delete user.password;
 
-			return res.status(201).json(user);
+			return res.status(201).json(ok(user));
 		} catch (err) {
 			return res.status(500).json(serverError());
 		}
