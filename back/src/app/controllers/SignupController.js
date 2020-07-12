@@ -1,25 +1,31 @@
 const UserService = require('../services/UserService');
 const { badRequest, serverError, ok } = require('../helpers/httpHelper');
 const MissingParamError = require('../errors/MissingParamError');
-const { data } = require('jquery');
+const InvalidParamError = require('../errors/InvalidParamError');
 
 class SignupController {
 
     async store(req, res) {
 		try {
             const fields = req.body;
-            const { email } = fields;      
+            const { email, gender } = fields;      
             const requiredFields = ['name', 'email', 'gender', 'password'];
+            const genders = ['m', 'f'];
             const missingParams = UserService.checkRequiredParams(fields, requiredFields);
 
             if (missingParams) {
                 return res.status(400).json(badRequest(new MissingParamError(missingParams)));
             }
 
+            if (!genders.includes(gender.toLowerCase())) {
+                const error = 'O parâmetro gender deve ser M ou F'
+                return res.status(400).json(badRequest(new InvalidParamError([error])));
+            }
+
             let userExists = await UserService.findByEmail(email);
             if (userExists) {
                 const error = ['Este E-email já foi cadastrado no sistema'];
-                return res.status(400).json(badRequest(new MissingParamError(error)));
+                return res.status(400).json(badRequest(new InvalidParamError(error)));
             }
 
 			let user = await UserService.create(fields);
