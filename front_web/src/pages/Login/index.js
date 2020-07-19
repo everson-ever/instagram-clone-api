@@ -1,6 +1,7 @@
 import React from 'react';
 
 import Phone from '../../components/Phone';
+import Footer from '../../components/Footer';
 import './styles.css';
 
 import Appstore from '../../assets/images/image-app-store.png';
@@ -15,11 +16,14 @@ import PhoneImage5 from '../../assets/images/phone-image5.jpg';
 
 
 const Login = () => {
-    const images = [PhoneImage1, PhoneImage2, PhoneImage3];
+    const images = [PhoneImage1, PhoneImage2, PhoneImage3, PhoneImage4, PhoneImage5];
 
     return (
+        <div>
         <section className="box-content">
-            <Phone imagesView={images} />
+            <div className="phone-view">
+                <Phone imagesView={images} />
+            </div>
 
             <div className="box-form-info">
                 <div className="box-form">
@@ -72,6 +76,8 @@ const Login = () => {
                 </div>
             </div>
         </section>
+        <Footer />
+        </div>
     );
 }
 
