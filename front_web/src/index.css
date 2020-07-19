@@ -1,0 +1,27 @@
+* {
+  margin: 0;
+  padding: 0;
+  outline-color: rgba(75,75,75,0.3);
+  outline-width: thin;
+  box-sizing: border-box;
+  
+}
+
+html, body {
+  background-color: #FAFAFA;
+  height: 100%;
+  font-family: 'Roboto', sans-serif;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  text-decoration: none;
+}
+
+ul {
+  list-style: none;
+}
